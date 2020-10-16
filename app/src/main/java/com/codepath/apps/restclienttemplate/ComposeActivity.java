@@ -3,11 +3,15 @@ package com.codepath.apps.restclienttemplate;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -22,8 +26,10 @@ public class ComposeActivity extends AppCompatActivity {
     public static final String TAG = "ComposeActivity";
     EditText etCompose;
     Button btnTweet;
-    public static final int MAX_TWEET_LENGTH = 140;
+    public static final int MAX_TWEET_LENGTH = 280;
     TwitterClient client;
+    TextView charCount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +40,26 @@ public class ComposeActivity extends AppCompatActivity {
 
         etCompose = findViewById(R.id.etCompose);
         btnTweet = findViewById(R.id.btnTweet);
+        charCount = findViewById(R.id.tvCharCount);
 
         // set click listener on button
+
+        etCompose.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateTextCount(s.length());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,4 +100,15 @@ public class ComposeActivity extends AppCompatActivity {
         });
     }
         // make an api call to twitter to publis hthetweet
+    public void updateTextCount(int count){
+        if (count == 0 ){
+            charCount.setText("0/"+MAX_TWEET_LENGTH);
+        }
+        else {
+            charCount.setText(count + "/"+MAX_TWEET_LENGTH);
+            if (count > MAX_TWEET_LENGTH){
+                charCount.setTextColor(Color.RED);
+            }
+        }
+    }
 }
